@@ -1,0 +1,14 @@
+*.class
+/target/surefire-reports/com.yru.lib.AppTest.txt
+*.lst
+*.eclipse.m2e.core.prefs
+*.MF
+*.prefs
+*.jar
+*.txt
+*.yru.lib.AppTest.xml
+*.yru.lib.ESTest.xml
+*.classpath
+*.project
+*.xml
+/target
