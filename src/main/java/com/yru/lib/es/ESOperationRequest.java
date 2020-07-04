@@ -1,6 +1,8 @@
 package com.yru.lib.es;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +14,10 @@ public class ESOperationRequest<T> {
 	private String index;
 
 	private ESDocument document;
+
+	private List<ESDocument> bulkDocument;
+
+	private int count;
 
 	private Set<ESQuery> mustTerms;
 
@@ -70,6 +76,11 @@ public class ESOperationRequest<T> {
 	}
 
 	public void buildESDocument(String id, T entity) {
+
+		this.document = buildESDoc(id, entity);
+	}
+
+	private ESDocument buildESDoc(String id, T entity) {
 		ESDocument document = new ESDocument();
 		try {
 			Map<String, Object> map = LibUtils.convertEntityToMap(entity);
@@ -78,7 +89,32 @@ public class ESOperationRequest<T> {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		this.document = document;
+		return document;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public List<ESDocument> getBulkDocument() {
+		return bulkDocument;
+	}
+
+	public void setBulkDocument(List<ESDocument> bulkDocument) {
+		this.bulkDocument = bulkDocument;
+	}
+
+	public ESOperationRequest<T> buildAndAddDoc(String id, T entity) {
+		ESDocument doc = buildESDoc(id, entity);
+		if (this.bulkDocument == null) {
+			this.bulkDocument = new ArrayList<>();
+		}
+		this.bulkDocument.add(doc);
+		return this;
 	}
 
 }

@@ -14,7 +14,7 @@ import com.yru.lib.exception.ESException;
 
 public class ESTest {
 
-	private static String host = "13.235.8.158";
+	private static String host = "localhost";
 	private static int port = 9200;
 
 	public static void main(String[] args) throws IOException {
