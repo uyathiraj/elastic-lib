@@ -8,19 +8,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import org.elasticsearch.common.geo.GeoDistance;
-import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.geo.geometry.Point;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchPhrasePrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yru.lib.exception.ESException;
@@ -116,56 +110,13 @@ public class ESOperationService implements ESOperation {
 	}
 
 	@Override
-	public <T> List<T> searchNearestPoints(ESGeoOperationRequest<?> esOperationRequest, Class<T> clazz)
-			throws ESException {
-		Point point = esOperationRequest.getPoint();
-		BoolQueryBuilder finalQuery = QueryBuilders.boolQuery();
-
-		if (esOperationRequest.getMustTerms() != null) {
-			for (ESQuery term : esOperationRequest.getMustTerms()) {
-				TermQueryBuilder termQuery = QueryBuilders.termQuery(term.getKey(), term.getValue());
-				finalQuery.must(termQuery);
-			}
-		}
-		GeoDistanceQueryBuilder geoDistanceFilter = QueryBuilders.geoDistanceQuery(ESConstants.BUILDING_LATLONG_FIELD)
-				.distance(esOperationRequest.getDistance(), DistanceUnit.KILOMETERS)
-				.point(point.getLat(), point.getLon()).geoDistance(GeoDistance.PLANE);
-
-		GeoDistanceSortBuilder distanceSort = SortBuilders
-				.geoDistanceSort(ESConstants.BUILDING_LATLONG_FIELD, point.getLat(), point.getLon())
-				.order(SortOrder.ASC).unit(DistanceUnit.KILOMETERS);
-
-		SearchSourceBuilder searchQuery = SearchSourceBuilder.searchSource().query(geoDistanceFilter).sort(distanceSort)
-				.size(esOperationRequest.getCount()).query(finalQuery);
-		try {
-			ESResponse<List<T>> response = esDocumentClient.searchDocument(esOperationRequest.getIndex(), searchQuery,
-					(map) -> {
-						try {
-							return LibUtils.convertMapToEntity(map, clazz);
-						} catch (JsonProcessingException e) {
-							e.printStackTrace();
-						}
-						return null;
-					});
-			if (response.getStatus() == 1) {
-				return response.getData();
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new ESException(e);
-		}
-		return new ArrayList<T>();
-
-	}
-
-	@Override
 	public void addDocumentBulk(ESOperationRequest<?> esOperationRequest) {
 		esDocumentClient.addBulkDocumentAsync(esOperationRequest.getIndex(), esOperationRequest.getBulkDocument(),
 				new Consumer<ESResponse<?>>() {
 
 					@Override
 					public void accept(ESResponse<?> arg0) {
+						System.out.println(((BulkResponse)arg0.getData()).getItems());
 						arg0.getData();
 						logger.info("Bulk upload success");
 

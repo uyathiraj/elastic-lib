@@ -25,9 +25,6 @@ public interface ESOperation {
 
 	public <T> List<T> searchDocument(ESOperationRequest<?> esOperationRequest, Class<T> clazz) throws ESException;
 
-	public <T> List<T> searchNearestPoints(ESGeoOperationRequest<?> esOperationRequest, Class<T> clazz)
-			throws ESException;
-
 	public void addDocumentBulk(ESOperationRequest<?> esOperationRequest);
 
 	public <T> T getDocument(String index, String id, Class<T> clazz);

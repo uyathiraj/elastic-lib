@@ -2,7 +2,7 @@ package com.yru.lib.es;
 
 import java.util.Set;
 
-import org.elasticsearch.geo.geometry.Point;
+import org.elasticsearch.common.unit.DistanceUnit;
 
 public class ESGeoOperationRequest<T> extends ESOperationRequest<T> {
 
@@ -10,26 +10,29 @@ public class ESGeoOperationRequest<T> extends ESOperationRequest<T> {
 		super(index);
 	}
 
-	private Point point;
-	
+	private GeoPoint point;
 
-	private Set<Point> pointSet;
+	private Set<GeoPoint> pointSet;
 
 	private double distance;
 
-	public Point getPoint() {
+	private double radius;
+
+	private DistanceUnit distanceUnit;
+
+	public GeoPoint getPoint() {
 		return point;
 	}
 
-	public void setPoint(Point point) {
+	public void setPoint(GeoPoint point) {
 		this.point = point;
 	}
 
-	public Set<Point> getPointSet() {
+	public Set<GeoPoint> getPointSet() {
 		return pointSet;
 	}
 
-	public void setPointSet(Set<Point> pointSet) {
+	public void setPointSet(Set<GeoPoint> pointSet) {
 		this.pointSet = pointSet;
 	}
 
@@ -41,7 +44,20 @@ public class ESGeoOperationRequest<T> extends ESOperationRequest<T> {
 		this.distance = distance;
 	}
 
-	
-	
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public DistanceUnit getDistanceUnit() {
+		return distanceUnit;
+	}
+
+	public void setDistanceUnit(DistanceUnit distanceUnit) {
+		this.distanceUnit = distanceUnit;
+	}
 
 }

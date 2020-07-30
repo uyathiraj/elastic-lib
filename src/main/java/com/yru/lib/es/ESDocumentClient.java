@@ -114,7 +114,7 @@ class ESDocumentClient {
 		for (ESDocument document : documents) {
 			IndexRequest indexRequest = new IndexRequest(index, "_doc").id(document.getId())
 					.source(document.getProperties());
-			//indexRequest.setRefreshPolicy("wait_for");
+			// indexRequest.setRefreshPolicy("wait_for");
 			indexRequest.setRefreshPolicy(RefreshPolicy.NONE);
 			indexRequest.timeout(new TimeValue(5, TimeUnit.MINUTES));
 			bulkRequest.add(indexRequest);
@@ -209,6 +209,7 @@ class ESDocumentClient {
 			Function<Map<String, Object>, T> fieldMapper) throws IOException {
 		SearchRequest searchRequest = new SearchRequest(index).source(sourceBuilder);
 		connect();
+		System.out.println(searchRequest.source().toString());
 		SearchResponse response = restClient.search(searchRequest, RequestOptions.DEFAULT);
 		close();
 		List<T> result = new ArrayList<>();

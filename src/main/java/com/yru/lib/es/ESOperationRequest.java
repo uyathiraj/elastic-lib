@@ -17,6 +17,8 @@ public class ESOperationRequest<T> {
 
 	private List<ESDocument> bulkDocument;
 
+	private Set<String> docValues;
+
 	private int count;
 
 	private Set<ESQuery> mustTerms;
@@ -57,6 +59,14 @@ public class ESOperationRequest<T> {
 
 	public void setSearchTerms(Set<ESQuery> searchTerms) {
 		this.searchTerms = searchTerms;
+	}
+
+	public Set<String> getDocValues() {
+		return docValues;
+	}
+
+	public void setDocValues(Set<String> docValues) {
+		this.docValues = docValues;
 	}
 
 	public Set<ESQuery> addMustTerm(ESQuery term) {
@@ -114,6 +124,14 @@ public class ESOperationRequest<T> {
 			this.bulkDocument = new ArrayList<>();
 		}
 		this.bulkDocument.add(doc);
+		return this;
+	}
+
+	public ESOperationRequest<?> addDocValue(String docValue) {
+		if (this.docValues == null) {
+			this.docValues = new HashSet<>();
+		}
+		this.docValues.add(docValue);
 		return this;
 	}
 
